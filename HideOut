@@ -17,12 +17,58 @@ OtherTab:AddToggle({
 	Name = "Gear 2",
 	Default = false,
 	Callback = function(Value)
-        while true do
 		local args = {
             [1] = "Strength_2"
         }
         
         game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("MergeGears"):FireServer(unpack(args))
-        wait
-	end    
+    end    
+})
+
+OtherTab:AddToggle({
+	Name = "Gear 3",
+	Default = false,
+	Callback = function(Value)
+		local args = {
+            [1] = "Strength_3"
+        }
+        
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("MergeGears"):FireServer(unpack(args))
+    end    
+})
+
+OtherTab:AddToggle({
+	Name = "Gear 4",
+	Default = false,
+	Callback = function(Value)
+		local args = {
+            [1] = "Strength_5"
+        }
+        
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("MergeGears"):FireServer(unpack(args))
+    end    
+})
+
+OtherTab:AddToggle({
+	Name = "Gear 6",
+	Default = false,
+	Callback = function(Value)
+		local args = {
+            [1] = "Strength_6"
+        }
+        
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("MergeGears"):FireServer(unpack(args))
+    end    
+})
+
+OtherTab:AddToggle({
+	Name = "Gear 7",
+	Default = false,
+	Callback = function(Value)
+		local args = {
+            [1] = "Strength_7"
+        }
+        
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("MergeGears"):FireServer(unpack(args))
+    end    
 })
