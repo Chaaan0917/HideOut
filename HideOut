@@ -10,18 +10,18 @@ local OtherTab = Window:MakeTab({
 })
 
 local Section = OtherTab:AddSection({
-	Name = "Auto Gears"
+	Name = "Auto Merge Gears"
 })
 
 -- Default selections for both dropdowns
 local selectedGear = "1" -- Default gear
-local selectedAction = "Stength" -- Default action
+local selectedAction = "fortune" -- Default action
 
 -- Create the second dropdown menu for Gear Type
 OtherTab:AddDropdown({
     Name = "Gear Type",
-    Default = "Strength", -- Default action selected
-    Options = {"Strength","Wins","Speed","Clover","Treasure","Fortune"}, -- Add more actions as needed
+    Default = "Strength_", -- Default action selected
+    Options = {"Strength_","Wins","Speed","Clover","Treasure","Fortune"}, -- Add more actions as needed
     Callback = function(Value)
         selectedAction = Value -- Update the selected action
         print("Selected Action: " .. selectedAction) -- Debug print
@@ -66,3 +66,50 @@ OtherTab:AddToggle({
         end
     end
 })
+
+local Section = OtherTab:AddSection({
+	Name = "Auto Craft Gears"
+})
+
+-- Default selection for the dropdown
+local selectedCraftingGear = "Strength" -- Default gear to craft
+
+-- Create the dropdown menu for gear crafting selection
+OtherTab:AddDropdown({
+    Name = "Crafting Gear Selection",
+    Default = "Strength", -- Default gear selected for crafting
+    Options = {"Strength","Wins","Speed","Clover","Treasure","Fortune"}, -- Add other gear types as needed
+    Callback = function(Value)
+        selectedCraftingGear = Value -- Update the selected gear for crafting
+        print("Selected Crafting Gear: " .. selectedCraftingGear) -- Debug print
+    end    
+})
+
+-- Create a toggle to start/stop the crafting loop for the selected gear
+OtherTab:AddToggle({
+    Name = "Auto Craft Gear",
+    Default = false, -- Toggle is off by default
+    Callback = function(Value)
+        craftingLoopRunning = Value -- Update the loop running state
+        if craftingLoopRunning then
+            print("Crafting loop started.") -- Debug print
+            spawn(function()
+                while craftingLoopRunning do
+                    -- Create the arguments based on the selected gear for crafting
+                    local args = {
+                        [1] = selectedCraftingGear -- Use the selected gear (e.g., "Strength")
+                    }
+
+                    -- Fire the CraftGear event for the selected gear
+                    game:GetService("ReplicatedStorage").Remotes.Events.CraftGear:FireServer(unpack(args))
+                    
+                    -- Add a delay to avoid overloading the server
+                    wait(1) -- Adjust the wait time if necessary
+                end
+            end)
+        else
+            print("Crafting loop stopped.") -- Debug print
+        end
+    end
+})
+
