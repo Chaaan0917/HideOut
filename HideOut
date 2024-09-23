@@ -16,7 +16,7 @@ local Section = OtherTab:AddSection({
 local selectedGear = "1" -- Default selected gear
 
 -- Create the dropdown menu with 6 gear options
-Tab:AddDropdown({
+OtherTab:AddDropdown({
     Name = "Gear Selection",
     Default = "1", -- Default gear selected
     Options = {"1", "2", "3", "4", "5", "6"}, -- All 6 gears
@@ -27,7 +27,7 @@ Tab:AddDropdown({
 })
 
 -- Create a toggle to activate/deactivate the selected gear action
-Tab:AddToggle({
+OtherTab:AddToggle({
     Name = "Activate Gear",
     Default = false, -- Toggle is off by default
     Callback = function(Value)
