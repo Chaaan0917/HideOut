@@ -298,3 +298,58 @@ OtherTab:AddToggle({
         end
     end
 })
+
+local TeleportTab = Window:MakeTab({
+	Name = "Teleport",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+local Section = TeleportTab:AddSection({
+	Name = "Teleport Worlds"
+})
+
+-- Worlds available for teleportation
+local worlds = {
+    "Park",
+    "Beach",
+    "Winter",
+    "Volcanic",
+    "Candy",
+    "Enchanted",
+    "Toy",
+    "Planet",
+    "Crystal",
+    "Pirates",
+    "Steampunk",
+    -- Add more worlds here
+}
+
+-- Create the dropdown within the Teleport Tab
+local selectedWorld = nil
+
+-- Dropdown for selecting the world
+local Dropdown = TeleportTab:AddDropdown({
+    Name = "Select World",
+    Default = "Beach", -- Default selection
+    Options = worlds,
+    Callback = function(option)
+        selectedWorld = option -- Store the selected world
+    end
+})
+
+-- Add a teleport button to the tab
+TeleportTab:AddButton({
+    Name = "Teleport",
+    Callback = function()
+        if selectedWorld then
+            -- Fire the event to teleport the player
+            local args = {
+                [1] = selectedWorld
+            }
+            game:GetService("ReplicatedStorage").Remotes.Events.UpdateZone:FireServer(unpack(args))
+        else
+            warn("No world selected!")
+        end
+    end
+})
