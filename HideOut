@@ -3,25 +3,25 @@ local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shl
 
 local Window = OrionLib:MakeWindow({Name = "HideOut Hub", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
 
-local OtherTab = Window:MakeTab({
-	Name = "Other",
+local GearsTab = Window:MakeTab({
+	Name = "Gears",
 	Icon = "rbxassetid://4483345998",
 	PremiumOnly = false
 })
 
-local Section = OtherTab:AddSection({
+local Section = GearsTab:AddSection({
 	Name = "Auto Merge Gears"
 })
 
 -- Default selections for both dropdowns
 local selectedGear = "1" -- Default gear
-local selectedAction = "fortune" -- Default action
+local selectedAction = "Strength" -- Default action
 
 -- Create the second dropdown menu for Gear Type
-OtherTab:AddDropdown({
+GearsTab:AddDropdown({
     Name = "Gear Type",
-    Default = "Strength_", -- Default action selected
-    Options = {"Strength_","Wins","Speed","Clover","Treasure","Fortune"}, -- Add more actions as needed
+    Default = "Strength", -- Default action selected
+    Options = {"Strength","Wins","Speed","Clover","SuperTap","Treasure","Fortune"}, -- Add more actions as needed
     Callback = function(Value)
         selectedAction = Value -- Update the selected action
         print("Selected Action: " .. selectedAction) -- Debug print
@@ -29,7 +29,7 @@ OtherTab:AddDropdown({
 })
 
 -- Create the first dropdown menu for Gear Value
-OtherTab:AddDropdown({
+GearsTab:AddDropdown({
     Name = "Gear Value",
     Default = "1", -- Default gear selected
     Options = {"1", "2", "3", "4", "5", "6"}, -- All 6 gears
@@ -40,7 +40,7 @@ OtherTab:AddDropdown({
 })
 
 -- Create a toggle to activate/deactivate the selected gear and action combination
-OtherTab:AddToggle({
+GearsTab:AddToggle({
     Name = "Activate",
     Default = false, -- Toggle is off by default
     Callback = function(Value)
@@ -67,7 +67,7 @@ OtherTab:AddToggle({
     end
 })
 
-local Section = OtherTab:AddSection({
+local Section = GearsTab:AddSection({
 	Name = "Auto Craft Gears"
 })
 
@@ -75,10 +75,10 @@ local Section = OtherTab:AddSection({
 local selectedCraftingGear = "Strength" -- Default gear to craft
 
 -- Create the dropdown menu for gear crafting selection
-OtherTab:AddDropdown({
+GearsTab:AddDropdown({
     Name = "Crafting Gear Selection",
     Default = "Strength", -- Default gear selected for crafting
-    Options = {"Strength","Wins","Speed","Clover","Treasure","Fortune"}, -- Add other gear types as needed
+    Options = {"Strength","Wins","Speed","Clover","SuperTap","Treasure","Fortune"}, -- Add other gear types as needed
     Callback = function(Value)
         selectedCraftingGear = Value -- Update the selected gear for crafting
         print("Selected Crafting Gear: " .. selectedCraftingGear) -- Debug print
@@ -86,7 +86,7 @@ OtherTab:AddDropdown({
 })
 
 -- Create a toggle to start/stop the crafting loop for the selected gear
-OtherTab:AddToggle({
+GearsTab:AddToggle({
     Name = "Auto Craft Gear",
     Default = false, -- Toggle is off by default
     Callback = function(Value)
