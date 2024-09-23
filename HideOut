@@ -135,7 +135,7 @@ EggsTab:AddDropdown({
     Default = "Plushie Egg", -- Default egg selected for hatching
     Options = {"Beginner Egg", "Farm Egg", "Ocean Egg", "Beach Egg","Winter Egg","Actic Egg","Lava Egg","Hell Egg","Slush Egg",
     "Chocolate Egg","Enchanted Egg","Angel Egg","Blocky Egg","Plushie Egg","Cactus Egg","Coconut Egg","Glow Egg","Crystal Egg",
-    "Raider Egg","Thieves Egg","Steampunk Egg","Gearpunk Egg"}, -- Add more egg types as needed
+    "Raider Egg","Thieves Egg","Steampunk Egg","Gearpunk Egg","20M Egg"}, -- Add more egg types as needed
     Callback = function(Value)
         selectedEgg = Value -- Update the selected egg
         print("Selected Egg: " .. selectedEgg) -- Debug print
