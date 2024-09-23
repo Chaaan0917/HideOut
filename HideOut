@@ -271,3 +271,30 @@ OtherTab:AddToggle({
         end
     end
 })
+
+-- Variable to track the state of auto-clicking
+local autoClicking = false
+
+-- Create a toggle for auto-clicking
+OtherTab:AddToggle({
+    Name = "Auto Click",
+    Default = false, -- Auto-click is off by default
+    Callback = function(Value)
+        autoClicking = Value -- Update auto-click state
+        if autoClicking then
+            print("Auto Click enabled.") -- Debug print
+            spawn(function()
+                while autoClicking do
+                    local args = {
+                        [1] = false
+                    }
+                    -- Fire the click event
+                    game:GetService("ReplicatedStorage").Remotes.Events.Click:FireServer(unpack(args))
+                    wait() -- Adjust the wait time for click speed (0.1 seconds = 10 clicks per second)
+                end
+            end)
+        else
+            print("Auto Click disabled.") -- Debug print
+        end
+    end
+})
