@@ -193,3 +193,34 @@ EggsTab:AddToggle({
         end
     end
 })
+
+local OtherTab = Window:MakeTab({
+	Name = "Others",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+local Section = EggsTab:AddSection({
+	Name = "Kill Script"
+})
+
+-- Assume you have a script named "TargetScript" that you want to kill
+local HideOut Hub = game.Workspace:FindFirstChild("HideOut Hub") -- Replace with the correct path
+
+Tab:AddToggle({
+    Name = "Kill Target Script",
+    Default = false,
+    Callback = function(Value)
+        print("Toggle State:", Value)
+        if Value then
+            if HideOut Hub then
+                HideOut Hub:Destroy() -- Kills the target script
+                print("HideOut Hub has been killed.")
+            else
+                print("HideOut Hub not found.")
+            end
+        else
+            print("Toggle is off, no action taken.")
+        end
+    end
+})
