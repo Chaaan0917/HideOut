@@ -338,16 +338,29 @@ local Dropdown = TeleportTab:AddDropdown({
     end
 })
 
--- Add a teleport button to the tab
+local teleportCooldown = false
+
 TeleportTab:AddButton({
     Name = "Teleport",
     Callback = function()
+        if teleportCooldown then
+            warn("Teleport in progress. Please wait.")
+            return
+        end
+        
         if selectedWorld then
+            teleportCooldown = true -- Activate cooldown
+            print("Firing UpdateZone with world: " .. selectedWorld)
+            
             -- Fire the event to teleport the player
             local args = {
                 [1] = selectedWorld
             }
             game:GetService("ReplicatedStorage").Remotes.Events.UpdateZone:FireServer(unpack(args))
+            
+            -- Set a cooldown timer to prevent re-firing too quickly
+            wait(2) -- Adjust this time as needed
+            teleportCooldown = false -- Allow next teleport
         else
             warn("No world selected!")
         end
