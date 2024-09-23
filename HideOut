@@ -290,7 +290,7 @@ OtherTab:AddToggle({
                     }
                     -- Fire the click event
                     game:GetService("ReplicatedStorage").Remotes.Events.Click:FireServer(unpack(args))
-                    wait() -- Adjust the wait time for click speed (0.1 seconds = 10 clicks per second)
+                    wait(0.1) -- Adjust the wait time for click speed (0.1 seconds = 10 clicks per second)
                 end
             end)
         else
