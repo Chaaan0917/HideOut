@@ -193,3 +193,28 @@ EggsTab:AddToggle({
         end
     end
 })
+
+-- New Toggle for Disabling Hatching Animation
+EggsTab:AddToggle({
+    Name = "Disable Hatching Animation",
+    Default = false, -- Toggle is off by default
+    Callback = function(Value)
+        local egg = game.Workspace:FindFirstChild("YourEggModelName") -- Replace with your egg model name
+        if egg then
+            if Value then
+                local animation = egg:FindFirstChild("HatchAnimation")
+                if animation then
+                    animation:Destroy() -- Remove the animation
+                    print("Hatching animation disabled.")
+                end
+            else
+                -- You may want to re-add the animation here if needed
+                -- For example, create a new animation instance as before
+                print("Hatching animation enabled.")
+            end
+        else
+            print("Egg model not found.")
+        end
+    end
+})
+
