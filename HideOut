@@ -186,7 +186,7 @@ EggsTab:AddToggle({
                     game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("PurchaseEgg"):FireServer(unpack(args))
 
                     -- Add a delay to avoid overloading the server
-                    wait() -- Adjust the wait time if necessary
+                    wait(0.01) -- Adjust the wait time if necessary
                 end
             end)
         else
