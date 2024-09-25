@@ -190,43 +190,24 @@ local Section = EggsTab:AddSection({
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 
--- Function to show a notification
-local function showNotification(message)
-    local notification = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-    local label = Instance.new("TextLabel", notification)
-    label.Text = message
-    label.Size = UDim2.new(1, 0, 0, 50)
-    label.Position = UDim2.new(0, 0, 0, 0)
-    label.BackgroundColor3 = Color3.new(1, 1, 1)
-    label.TextColor3 = Color3.new(0, 0, 0)
-    wait(3) -- Display for 3 seconds
-    notification:Destroy()
-end
-
 -- Function to disable egg hatch animations
 local function disableEggHatchAnimations()
-    local eggSpinsPath1 = game:GetService("StarterPlayer").StarterPlayerScripts.AnimationEffects:FindFirstChild("EggSpins")
-    if eggSpinsPath1 then
-        eggSpinsPath1.Enabled = false
-        showNotification("EggSpins disabled in StarterPlayerScripts.")
+    -- Attempt to access the EggSpins and its Animation
+    local eggSpins = player.PlayerScripts:WaitForChild("AnimationEffects"):FindFirstChild("EggSpins")
+
+    if eggSpins then
+        eggSpins.Enabled = false -- Disable the EggSpins effect
+        print("EggSpins disabled in PlayerScripts.")
     else
-        showNotification("EggSpins not found in StarterPlayerScripts.")
+        print("EggSpins not found in PlayerScripts.")
     end
 
-    local eggAnimationPath1 = game:GetService("StarterPlayer").StarterPlayerScripts.AnimationEffects.EggSpins:FindFirstChild("Animation")
-    if eggAnimationPath1 then
-        eggAnimationPath1:Stop()
-        showNotification("Egg animation stopped in StarterPlayerScripts.")
+    local eggAnimation = eggSpins and eggSpins:FindFirstChild("Animation")
+    if eggAnimation then
+        eggAnimation:Stop() -- Stop the animation
+        print("Egg animation stopped in PlayerScripts.")
     else
-        showNotification("Egg animation not found in StarterPlayerScripts.")
-    end
-
-    local eggSpinsPath2 = player.PlayerScripts.AnimationEffects:FindFirstChild("EggSpins")
-    if eggSpinsPath2 then
-        eggSpinsPath2.Enabled = false
-        showNotification("EggSpins disabled in PlayerScripts.")
-    else
-        showNotification("EggSpins not found in PlayerScripts.")
+        print("Egg animation not found in PlayerScripts.")
     end
 end
 
@@ -238,13 +219,15 @@ EggsTab:AddToggle({
         if Value then
             disableEggHatchAnimations()
         else
-            showNotification("Egg hatch animations enabled.")
-            -- Re-enable animations if needed
+            print("Egg hatch animations enabled.")
+            -- Re-enable animations if necessary
+            -- Uncomment the next line if you want to re-enable the animations
+            -- eggSpins.Enabled = true 
         end
     end
 })
 
--- Existing Auto Hatch code remains unchanged
+-- Your existing Auto Hatch code remains unchanged
 
 -- Create the dropdown menu for egg selection (unchanged)
 EggsTab:AddDropdown({
