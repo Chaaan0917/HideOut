@@ -257,30 +257,6 @@ EggsTab:AddToggle({
     end
 })
 
--- Define the toggle variable
-local eggAnimationEnabled = true  -- Initially, the animation is enabled
-
--- Function to toggle egg animation status
-local function toggleEggAnimation()
-    -- Toggle the state
-    eggAnimationEnabled = not eggAnimationEnabled  
-
-    -- Fire the remote event to set the animation status
-    game:GetService("ReplicatedStorage").Remotes.Events.EggAnimateStatus:Fire(eggAnimationEnabled)
-
-    -- Print the current status for debugging
-    print("Egg Animation Enabled: " .. tostring(eggAnimationEnabled))
-end
-
--- Add the toggle button to your tab
-Tab:AddButton({
-    Name = "Toggle Egg Animation",
-    Callback = function()
-        toggleEggAnimation()
-    end    
-})
-
-
 local OtherTab = Window:MakeTab({
 	Name = "Other",
 	Icon = "rbxassetid://4483345998",
