@@ -273,20 +273,31 @@ OtherTab:AddToggle({
 })
 
 local autoClick = false
+local autoClickTask
 
 OtherTab:AddToggle({
 	Name = "Auto click",
 	Default = false,
 	Callback = function(Value)
-        autoClick = Value  -- Set autoClick to the value of the toggle (true or false)
+        autoClick = Value
         
-        while autoClick do  -- Run loop only if autoClick is true
-            local args = {
-                [1] = false
-            }
-            
-            game:GetService("ReplicatedStorage").Remotes.Events.Click:FireServer(unpack(args))
-            wait(0.1)  -- Add a small delay to prevent server overload
+        if autoClick then
+            -- Start the auto-clicking process
+            autoClickTask = task.spawn(function()
+                while autoClick do
+                    local args = {
+                        [1] = false
+                    }
+                    
+                    game:GetService("ReplicatedStorage").Remotes.Events.Click:FireServer(unpack(args))
+                    wait(0.1)  -- Add a small delay to avoid server overload
+                end
+            end)
+        else
+            -- Stop the auto-clicking process
+            if autoClickTask then
+                task.cancel(autoClickTask)
+            end
         end
 	end    
 })
