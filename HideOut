@@ -190,24 +190,21 @@ local Section = EggsTab:AddSection({
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 
--- Function to disable egg hatch animations
-local function disableEggHatchAnimations()
-    -- Attempt to access the EggSpins and its Animation
-    local eggSpins = player.PlayerScripts:WaitForChild("AnimationEffects"):FindFirstChild("EggSpins")
-
-    if eggSpins then
-        eggSpins.Enabled = false -- Disable the EggSpins effect
-        print("EggSpins disabled in PlayerScripts.")
+-- Function to hide egg hatch animations
+local function hideEggHatchAnimations()
+    -- Access the AnimationEffects
+    local animationEffects = player.PlayerScripts:FindFirstChild("AnimationEffects")
+    if animationEffects then
+        -- Try to find the EggSpins object
+        local eggSpins = animationEffects:FindFirstChild("EggSpins")
+        if eggSpins then
+            eggSpins:Destroy() -- Remove the EggSpins effect completely
+            print("EggSpins removed from PlayerScripts.")
+        else
+            print("EggSpins not found in PlayerScripts.")
+        end
     else
-        print("EggSpins not found in PlayerScripts.")
-    end
-
-    local eggAnimation = eggSpins and eggSpins:FindFirstChild("Animation")
-    if eggAnimation then
-        eggAnimation:Stop() -- Stop the animation
-        print("Egg animation stopped in PlayerScripts.")
-    else
-        print("Egg animation not found in PlayerScripts.")
+        print("AnimationEffects not found in PlayerScripts.")
     end
 end
 
@@ -217,17 +214,16 @@ EggsTab:AddToggle({
     Default = false,
     Callback = function(Value)
         if Value then
-            disableEggHatchAnimations()
+            hideEggHatchAnimations() -- Call function to hide animations
         else
             print("Egg hatch animations enabled.")
-            -- Re-enable animations if necessary
-            -- Uncomment the next line if you want to re-enable the animations
-            -- eggSpins.Enabled = true 
+            -- If needed, you could re-add the EggSpins here if you've stored a reference to it.
         end
     end
 })
 
 -- Your existing Auto Hatch code remains unchanged
+
 
 -- Create the dropdown menu for egg selection (unchanged)
 EggsTab:AddDropdown({
