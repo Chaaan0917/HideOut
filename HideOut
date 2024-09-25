@@ -3,70 +3,6 @@ local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shl
 
 local Window = OrionLib:MakeWindow({Name = "HideOut Hub", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
 
-local AutoTab = Window:MakeTab({
-	Name = "Auto Farm",
-	Icon = "rbxassetid://4483345998",
-	PremiumOnly = false
-})
-
-local Section = AutoTab:AddSection({
-	Name = "Auto Click"
-})
-
-local isAutoClicking = false -- Toggle state
-
--- Function to handle auto-clicking
-local function autoClick()
-    while isAutoClicking do
-        wait(0.1) -- Adjust the delay as needed
-        game:GetService("ReplicatedStorage").Remotes.Events.Click:Fire() -- Fire the click event
-    end
-end
-
--- Create the toggle in your tab
-AutoTab:AddToggle({
-    Name = "Auto Click",
-    Default = false, -- Set initial state
-    Callback = function(Value)
-        isAutoClicking = Value -- Update toggle state
-        if isAutoClicking then
-            print("Auto-clicking is now ON.")
-            autoClick() -- Start auto-clicking
-        else
-            print("Auto-clicking is now OFF.")
-        end
-    end    
-})
-
-local Section = AutoTab:AddSection({
-	Name = "Auto Orbs"
-})
-
-local isCollecting = false -- Toggle state
-
--- Function to collect DropOrbs
-local function collectDropOrbs()
-    while isCollecting do
-        wait(0.1) -- Adjust delay as necessary
-        game:GetService("ReplicatedStorage").Remotes.Events.DropOrb:Fire()
-    end
-end
-
--- Create the toggle in your tab
-AutoTab:AddToggle({
-    Name = "Auto Collect DropOrbs",
-    Default = false,
-    Callback = function(Value)
-        isCollecting = Value -- Update toggle state
-        if isCollecting then
-            print("Auto-collecting DropOrbs is now ON.")
-            collectDropOrbs() -- Start collecting
-        else
-            print("Auto-collecting DropOrbs is now OFF.")
-        end
-    end    
-})
-
 local GearsTab = Window:MakeTab({
 	Name = "Gears",
 	Icon = "rbxassetid://4483345998",
@@ -187,58 +123,26 @@ local Section = EggsTab:AddSection({
 	Name = "Auto Hatch Eggs"
 })
 
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
+-- Default selections for the dropdowns
+local selectedEgg = "Plushie Egg" -- Default egg type
+local selectedHatchCount = 1 -- Default hatch count (1, 3, or 8)
+local selectedType = false -- Default: false (Normal)
+local hatchLoopRunning = false -- State for the auto hatch toggle
 
--- Function to hide egg hatch animations
-local function hideEggHatchAnimations()
-    -- Access the AnimationEffects
-    local animationEffects = player.PlayerScripts:FindFirstChild("AnimationEffects")
-    if animationEffects then
-        -- Try to find the EggSpins object
-        local eggSpins = animationEffects:FindFirstChild("EggSpins")
-        if eggSpins then
-            eggSpins:Destroy() -- Remove the EggSpins effect completely
-            print("EggSpins removed from PlayerScripts.")
-        else
-            print("EggSpins not found in PlayerScripts.")
-        end
-    else
-        print("AnimationEffects not found in PlayerScripts.")
-    end
-end
-
--- Add a toggle for disabling visible hatch animations
-EggsTab:AddToggle({
-    Name = "Disable Visible Hatch Animations",
-    Default = false,
-    Callback = function(Value)
-        if Value then
-            hideEggHatchAnimations() -- Call function to hide animations
-        else
-            print("Egg hatch animations enabled.")
-            -- If needed, you could re-add the EggSpins here if you've stored a reference to it.
-        end
-    end
-})
-
--- Your existing Auto Hatch code remains unchanged
-
-
--- Create the dropdown menu for egg selection (unchanged)
+-- Create the dropdown menu for egg selection
 EggsTab:AddDropdown({
     Name = "Egg Selection",
     Default = "Plushie Egg", -- Default egg selected for hatching
-    Options = {"Beginner Egg", "Farm Egg", "Ocean Egg", "Beach Egg", "Winter Egg", "Arctic Egg", "Lava Egg", "Hell Egg", "Slush Egg",
-               "Chocolate Egg", "Enchanted Egg", "Angel Egg", "Blocky Egg", "Plushie Egg", "Cactus Egg", "Coconut Egg", "Glow Egg", "Crystal Egg",
-               "Raider Egg", "Thieves Egg", "Steampunk Egg", "Gearpunk Egg"}, -- Add more egg types as needed
+    Options = {"Beginner Egg", "Farm Egg", "Ocean Egg", "Beach Egg","Winter Egg","Actic Egg","Lava Egg","Hell Egg","Slush Egg",
+    "Chocolate Egg","Enchanted Egg","Angel Egg","Blocky Egg","Plushie Egg","Cactus Egg","Coconut Egg","Glow Egg","Crystal Egg",
+    "Raider Egg","Thieves Egg","Steampunk Egg","Gearpunk Egg","20M Egg"}, -- Add more egg types as needed
     Callback = function(Value)
         selectedEgg = Value -- Update the selected egg
         print("Selected Egg: " .. selectedEgg) -- Debug print
     end    
 })
 
--- Create the dropdown menu for hatch count selection (unchanged)
+-- Create the dropdown menu for hatch count selection
 EggsTab:AddDropdown({
     Name = "Hatch Count Selection",
     Default = "1", -- Default hatch count
@@ -249,7 +153,7 @@ EggsTab:AddDropdown({
     end    
 })
 
--- Create the dropdown menu for egg type selection (Normal/Golden) (unchanged)
+-- Create the dropdown menu for egg type selection (Normal/Golden)
 EggsTab:AddDropdown({
     Name = "Egg Type Selection",
     Default = "Normal", -- Default egg type
@@ -260,7 +164,7 @@ EggsTab:AddDropdown({
     end    
 })
 
--- Auto Hatch Toggle (unchanged)
+-- Modify the existing auto-hatch loop to respect the toggle for animations
 EggsTab:AddToggle({
     Name = "Auto Hatch",
     Default = false, -- Toggle is off by default
@@ -276,15 +180,90 @@ EggsTab:AddToggle({
                         [2] = selectedHatchCount, -- Use the selected hatch count
                         [3] = selectedType -- Use the selected boolean value (true for Golden, false for Normal)
                     }
+
+
                     -- Fire the PurchaseEgg event for the selected egg
                     game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("PurchaseEgg"):FireServer(unpack(args))
 
                     -- Add a delay to avoid overloading the server
-                    wait(1) -- Adjust the wait time if necessary
+                    wait() -- Adjust the wait time if necessary
                 end
             end)
         else
             print("Auto hatching stopped.") -- Debug print
         end
     end
+})
+
+local OtherTab = Window:MakeTab({
+	Name = "Other",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+local Section = OtherTab:AddSection({
+	Name = "avoid afk"
+})
+
+-- Variable to track whether anti-AFK is enabled
+local antiAFKEnabled = false
+
+-- Function to perform anti-AFK (jumping or moving periodically)
+local function antiAFK()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+
+    while antiAFKEnabled do
+        -- Simulate a jump every 30 seconds (adjust time as necessary)
+        if character and character:FindFirstChild("Humanoid") then
+            character.Humanoid.Jump = true -- Make the character jump
+            print("Anti-AFK: Character jumped to avoid being kicked.")
+        end
+        wait(30) -- Wait 30 seconds before the next jump (adjust as needed)
+    end
+end
+
+-- Create a toggle to start/stop the anti-AFK mechanism
+OtherTab:AddToggle({
+    Name = "Anti-AFK",
+    Default = false, -- Anti-AFK is off by default
+    Callback = function(Value)
+        antiAFKEnabled = Value -- Update anti-AFK state
+        if antiAFKEnabled then
+            print("Anti-AFK enabled.") -- Debug print
+            spawn(antiAFK) -- Start the anti-AFK loop
+        else
+            print("Anti-AFK disabled.") -- Debug print
+        end
+    end
+})
+
+local autoClick = false
+local autoClickTask
+
+OtherTab:AddToggle({
+	Name = "Auto click",
+	Default = false,
+	Callback = function(Value)
+        autoClick = Value
+        
+        if autoClick then
+            -- Start the auto-clicking process
+            autoClickTask = task.spawn(function()
+                while autoClick do
+                    local args = {
+                        [1] = false
+                    }
+                    
+                    game:GetService("ReplicatedStorage").Remotes.Events.Click:FireServer(unpack(args))
+                    wait(0.1)  -- Add a small delay to avoid server overload
+                end
+            end)
+        else
+            -- Stop the auto-clicking process
+            if autoClickTask then
+                task.cancel(autoClickTask)
+            end
+        end
+	end    
 })
