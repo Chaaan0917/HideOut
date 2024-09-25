@@ -187,41 +187,35 @@ local Section = EggsTab:AddSection({
 	Name = "Auto Hatch Eggs"
 })
 
--- Function to disable egg hatch animations across multiple locations
+-- Function to disable egg hatch animations based on specific paths
 local function disableEggHatchAnimations()
     local player = game:GetService("Players").LocalPlayer
 
-    -- List of possible animation sources
-    local animationPaths = {
-        game:GetService("StarterPlayer").StarterPlayerScripts:FindFirstChild("AnimationEffects"),
-        player:FindFirstChild("PlayerScripts"):FindFirstChild("AnimationEffects"),
-        game:GetService("Players").LocalPlayer.PlayerScripts:FindFirstChild("AnimationEffects")
-    }
+    -- Check the first path
+    local eggSpins1 = game:GetService("StarterPlayer").StarterPlayerScripts.AnimationEffects:FindFirstChild("EggSpins")
+    if eggSpins1 then
+        eggSpins1.Transparency = 1 -- Make it invisible
+        print("Disabled EggSpins visibility in StarterPlayerScripts.")
+    else
+        print("EggSpins not found in StarterPlayerScripts.")
+    end
 
-    -- Iterate through all potential sources and attempt to disable visibility
-    for _, animationEffects in ipairs(animationPaths) do
-        if animationEffects then
-            local eggSpins = animationEffects:FindFirstChild("EggSpins")
-            if eggSpins then
-                for _, obj in ipairs(eggSpins:GetDescendants()) do
-                    if obj:IsA("BasePart") then
-                        obj.Transparency = 1 -- Make it invisible
-                        print("Set transparency for part: " .. obj.Name)
-                    elseif obj:IsA("AnimationTrack") then
-                        obj:Stop() -- Stop animations if any
-                        print("Stopped animation: " .. obj.Name)
-                    elseif obj:IsA("ParticleEmitter") then
-                        obj.Enabled = false -- Disable particle effects if any
-                        print("Disabled particle emitter: " .. obj.Name)
-                    end
-                end
-                print("Egg hatch animations disabled in path: " .. animationEffects:GetFullName())
-            else
-                print("EggSpins not found in: " .. animationEffects:GetFullName())
-            end
-        else
-            print("AnimationEffects not found at this path.")
-        end
+    -- Check the second path (Animation)
+    local eggAnimation1 = game:GetService("StarterPlayer").StarterPlayerScripts.AnimationEffects.EggSpins:FindFirstChild("Animation")
+    if eggAnimation1 then
+        eggAnimation1:Stop() -- Stop the animation
+        print("Stopped egg animation in StarterPlayerScripts.")
+    else
+        print("Egg animation not found in StarterPlayerScripts.")
+    end
+
+    -- Check the third path
+    local eggSpins2 = player.PlayerScripts.AnimationEffects:FindFirstChild("EggSpins")
+    if eggSpins2 then
+        eggSpins2.Transparency = 1 -- Make it invisible
+        print("Disabled EggSpins visibility in PlayerScripts.")
+    else
+        print("EggSpins not found in PlayerScripts.")
     end
 end
 
@@ -270,6 +264,7 @@ EggsTab:AddToggle({
             disableEggHatchAnimations()
         else
             print("Egg hatch animations enabled.")
+            -- Optional: Reset the transparency back if needed (not included here for clarity)
         end
     end
 })
