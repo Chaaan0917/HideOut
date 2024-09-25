@@ -188,22 +188,31 @@ local Section = EggsTab:AddSection({
 })
 
 -- Default selections for the dropdowns
-local selectedEgg = "Beginner Egg" -- Default egg type
+local selectedEgg = "Plushie Egg" -- Default egg type
 local selectedHatchCount = 1 -- Default hatch count (1, 3, or 8)
 local selectedType = false -- Default: false (Normal)
 local hatchLoopRunning = false -- State for the auto hatch toggle
 local disableAnimations = false -- State for the animation toggle
 
--- Function to make the egg hatch UI/effects invisible
-local function setEggHatchEffectsVisibility(visible)
+-- Function to disable visible egg hatch animations using the provided paths
+local function setEggHatchAnimationsVisibility(visible)
     local player = game:GetService("Players").LocalPlayer
-    local eggUI = player:WaitForChild("PlayerGui"):FindFirstChild("EggHatchUI") -- Adjust this to the correct path if needed
+    local eggAnimations = player:WaitForChild("PlayerScripts"):WaitForChild("AnimationEffects"):WaitForChild("EggSpins")
 
-    if eggUI then
-        eggUI.Enabled = visible -- Disable the UI element for hatch animations
-        print("Egg hatch UI visibility set to: " .. tostring(visible)) -- Debug print
+    if eggAnimations then
+        for _, animation in ipairs(eggAnimations:GetChildren()) do
+            if animation:IsA("Animation") then
+                animation.Enabled = visible -- Enable or disable the animation based on the toggle
+            end
+        end
+
+        if visible then
+            print("Visible egg hatch animations enabled.") -- Debug print
+        else
+            print("Visible egg hatch animations disabled.") -- Debug print
+        end
     else
-        print("EggHatchUI not found.") -- Debug print if not found
+        print("EggSpins not found.") -- Debug print if not found
     end
 end
 
@@ -248,7 +257,7 @@ EggsTab:AddToggle({
     Default = false, -- Toggle is off by default
     Callback = function(Value)
         disableAnimations = Value -- Update the animation toggle state
-        setEggHatchEffectsVisibility(not disableAnimations) -- Set visibility based on toggle
+        setEggHatchAnimationsVisibility(not disableAnimations) -- Set visibility based on toggle
     end
 })
 
