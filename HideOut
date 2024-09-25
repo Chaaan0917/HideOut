@@ -267,3 +267,31 @@ OtherTab:AddToggle({
         end
 	end    
 })
+
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+-- Function to disable egg hatch animations
+local function disableEggHatchAnimations()
+    -- Attempt to access the EggSpins in StarterPlayerScripts
+    local eggSpinsStarterPlayer = game:GetService("StarterPlayer").StarterPlayerScripts.AnimationEffects:FindFirstChild("EggSpins")
+    if eggSpinsStarterPlayer then
+        eggSpinsStarterPlayer.Enabled = false -- Disable the EggSpins effect
+        print("EggSpins disabled in StarterPlayerScripts.")
+    else
+        print("EggSpins not found in StarterPlayerScripts.")
+    end
+
+    -- Attempt to access the EggSpins in PlayerScripts
+    local eggSpinsPlayerScripts = player.PlayerScripts:FindFirstChild("AnimationEffects"):FindFirstChild("EggSpins")
+    if eggSpinsPlayerScripts then
+        eggSpinsPlayerScripts.Enabled = false -- Disable the EggSpins effect
+        print("EggSpins disabled in PlayerScripts.")
+    else
+        print("EggSpins not found in PlayerScripts.")
+    end
+end
+
+-- Call the function to disable animations
+disableEggHatchAnimations()
