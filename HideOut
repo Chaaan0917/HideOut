@@ -272,7 +272,7 @@ OtherTab:AddToggle({
     end
 })
 
-Tab:AddToggle({
+OtherTab:AddToggle({
 	Name = "This is a toggle!",
 	Default = false,
 	Callback = function(Value)
