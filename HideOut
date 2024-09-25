@@ -202,12 +202,17 @@ local function disableEggHatchAnimations()
     if animationEffects then
         local eggSpins = animationEffects:FindFirstChild("EggSpins")
         if eggSpins then
-            -- Set transparency to make it invisible (for parts or GUI elements)
-            for _, obj in ipairs(eggSpins:GetChildren()) do
+            -- Attempt to stop any running animations and make parts invisible
+            for _, obj in ipairs(eggSpins:GetDescendants()) do
                 if obj:IsA("BasePart") then
                     obj.Transparency = 1 -- Make it invisible
-                elseif obj:IsA("Animation") then
-                    obj:Stop() -- Stop animations
+                    print("Set transparency for part: " .. obj.Name)
+                elseif obj:IsA("AnimationTrack") then
+                    obj:Stop() -- Stop animations if any
+                    print("Stopped animation: " .. obj.Name)
+                elseif obj:IsA("ParticleEmitter") then
+                    obj.Enabled = false -- Disable particle effects if any
+                    print("Disabled particle emitter: " .. obj.Name)
                 end
             end
             print("Egg hatch animations disabled.")
