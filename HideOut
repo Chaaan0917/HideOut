@@ -269,7 +269,7 @@ OtherTab:AddToggle({
 })
 
 -- Create the toggle
-Tab:AddToggle({
+OtherTab:AddToggle({
     Name = "Collect Orbs",
     Default = false,
     Callback = function(isEnabled)
