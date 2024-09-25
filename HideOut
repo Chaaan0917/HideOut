@@ -272,8 +272,8 @@ OtherTab:AddToggle({
     end
 })
 
-Tab:AddToggle({
-	Name = "This is a toggle!",
+OtherTab:AddToggle({
+	Name = "Auto click",
 	Default = false,
 	Callback = function(Value)
         while true do
