@@ -272,27 +272,46 @@ OtherTab:AddToggle({
     end
 })
 
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
 -- Variable to track the state of auto-clicking
 local autoClicking = false
 
+-- Function to simulate mouse clicks at random positions on the screen
+local function simulateRandomClick()
+    local playerGui = player:WaitForChild("PlayerGui")
+    
+    while autoClicking do
+        -- Get screen dimensions
+        local screenSize = playerGui.AbsoluteSize
+        
+        -- Generate random positions within the screen dimensions
+        local randomX = math.random(0, screenSize.X)
+        local randomY = math.random(0, screenSize.Y)
+        
+        -- Simulate the mouse click at the random position
+        local args = {
+            [1] = Vector2.new(randomX, randomY) -- Click at a random position
+        }
+
+        -- Fire the click event
+        game:GetService("ReplicatedStorage").Remotes.Events.Click:FireServer(unpack(args))
+
+        wait(0.1) -- Adjust this for click speed
+    end
+end
+
 -- Create a toggle for auto-clicking
 OtherTab:AddToggle({
-    Name = "Auto Click",
+    Name = "Auto Click Randomly",
     Default = false, -- Auto-click is off by default
     Callback = function(Value)
         autoClicking = Value -- Update auto-click state
         if autoClicking then
             print("Auto Click enabled.") -- Debug print
-            spawn(function()
-                while autoClicking do
-                    local args = {
-                        [1] = false
-                    }
-                    -- Fire the click event
-                    game:GetService("ReplicatedStorage").Remotes.Events.Click:FireServer(unpack(args))
-                    wait(0.1) -- Adjust the wait time for click speed (0.1 seconds = 10 clicks per second)
-                end
-            end)
+            spawn(simulateRandomClick) -- Start simulating random clicks
         else
             print("Auto Click disabled.") -- Debug print
         end
