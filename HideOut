@@ -276,7 +276,7 @@ Tab:AddToggle({
 	Name = "This is a toggle!",
 	Default = false,
 	Callback = function(Value)
-        While true do
+        while true do
         local args = {
             [1] = false
         }
