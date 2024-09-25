@@ -272,15 +272,22 @@ OtherTab:AddToggle({
     end
 })
 
+local toggleLoop = false -- Variable to control the loop
+
 OtherTab:AddToggle({
-	Name = "This is a toggle!",
-	Default = false,
-	Callback = function(Value)
-        while true do
-        local args = {
-            [1] = false
-        }
-        
-        game:GetService("ReplicatedStorage").Remotes.Events.Click:FireServer(unpack(args))
-    end  
+    Name = "This is a toggle!",
+    Default = false,
+    Callback = function(Value)
+        toggleLoop = Value -- Update the loop control based on the toggle state
+        if toggleLoop then
+            -- Start the loop when toggle is true
+            while toggleLoop do
+                local args = {
+                    [1] = false
+                }
+                game:GetService("ReplicatedStorage").Remotes.Events.Click:FireServer(unpack(args))
+                wait(0.1) -- Add a delay to control the speed of the loop
+            end
+        end
+    end    
 })
