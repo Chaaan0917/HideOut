@@ -268,10 +268,34 @@ OtherTab:AddToggle({
 	end    
 })
 
+-- Create the toggle
+Tab:AddToggle({
+    Name = "Collect Orbs",
+    Default = false,
+    Callback = function(isEnabled)
+        if isEnabled then
+            collectOrbs() -- Call the function to start collecting orbs
+        end
+    end    
+})
 
-local starterPlayer = game:GetService("StarterPlayer")
-local eggSpins = starterPlayer.StarterPlayerScripts.AnimationEffects:FindFirstChild("EggSpins")
+-- Function to collect orbs
+local function collectOrbs()
+    local orbs = game:GetService("ReplicatedStorage").Remotes.Events.CollectDrop
+    while wait(1) do -- Loop to keep checking for orbs every second
+        for i, v in pairs(orbs:GetChildren()) do
+            if not isEnabled then return end -- Exit if toggle is turned off
 
-if eggSpins then
-    eggSpins.Disabled = true
+            if v:IsA("MeshPart") then
+                local user = game.Players.LocalPlayer.Character.Head
+                firetouchinterest(user, v, 0)
+            elseif v:IsA("Model") then
+                local summerOrb = v["orb.1"]
+                firetouchinterest(game.Players.LocalPlayer.Character.Head, summerOrb, 0)
+            end
+        end
+    end
 end
+
+-- If needed, you can also handle the toggle turning off
+
