@@ -187,37 +187,52 @@ local Section = EggsTab:AddSection({
 	Name = "Auto Hatch Eggs"
 })
 
--- Function to disable egg hatch animations based on specific paths
+-- Function to disable egg hatch animations
 local function disableEggHatchAnimations()
     local player = game:GetService("Players").LocalPlayer
 
-    -- Check the first path
-    local eggSpins1 = game:GetService("StarterPlayer").StarterPlayerScripts.AnimationEffects:FindFirstChild("EggSpins")
-    if eggSpins1 then
-        eggSpins1.Transparency = 1 -- Make it invisible
-        print("Disabled EggSpins visibility in StarterPlayerScripts.")
+    -- Attempt to access and disable the animation effects
+    local eggSpinsPath1 = game:GetService("StarterPlayer").StarterPlayerScripts.AnimationEffects:FindFirstChild("EggSpins")
+    if eggSpinsPath1 then
+        eggSpinsPath1.Enabled = false -- Disable if there's an Enabled property
+        print("EggSpins disabled in StarterPlayerScripts.")
     else
         print("EggSpins not found in StarterPlayerScripts.")
     end
 
-    -- Check the second path (Animation)
-    local eggAnimation1 = game:GetService("StarterPlayer").StarterPlayerScripts.AnimationEffects.EggSpins:FindFirstChild("Animation")
-    if eggAnimation1 then
-        eggAnimation1:Stop() -- Stop the animation
-        print("Stopped egg animation in StarterPlayerScripts.")
+    local eggAnimationPath1 = game:GetService("StarterPlayer").StarterPlayerScripts.AnimationEffects.EggSpins:FindFirstChild("Animation")
+    if eggAnimationPath1 then
+        eggAnimationPath1:Stop() -- Stop the animation
+        print("Egg animation stopped in StarterPlayerScripts.")
     else
         print("Egg animation not found in StarterPlayerScripts.")
     end
 
-    -- Check the third path
-    local eggSpins2 = player.PlayerScripts.AnimationEffects:FindFirstChild("EggSpins")
-    if eggSpins2 then
-        eggSpins2.Transparency = 1 -- Make it invisible
-        print("Disabled EggSpins visibility in PlayerScripts.")
+    local eggSpinsPath2 = player.PlayerScripts.AnimationEffects:FindFirstChild("EggSpins")
+    if eggSpinsPath2 then
+        eggSpinsPath2.Enabled = false -- Disable if there's an Enabled property
+        print("EggSpins disabled in PlayerScripts.")
     else
         print("EggSpins not found in PlayerScripts.")
     end
 end
+
+-- Add a toggle for disabling visible hatch animations
+EggsTab:AddToggle({
+    Name = "Disable Visible Hatch Animations",
+    Default = false, -- Toggle is off by default
+    Callback = function(Value)
+        if Value then
+            disableEggHatchAnimations()
+        else
+            print("Egg hatch animations enabled.")
+            -- Here you can also re-enable the animations if needed
+        end
+    end
+})
+
+-- Existing Auto Hatch code remains unchanged
+-- (Place the rest of your script here)
 
 -- Create the dropdown menu for egg selection (unchanged)
 EggsTab:AddDropdown({
@@ -252,21 +267,6 @@ EggsTab:AddDropdown({
         selectedType = (Value == "Golden") -- Set to true for "Golden", false for "Normal"
         print("Selected Egg Type (boolean): " .. tostring(selectedType)) -- Debug print
     end    
-})
-
--- Toggle for disabling visible hatch egg animations
-EggsTab:AddToggle({
-    Name = "Disable Visible Hatch Animations",
-    Default = false, -- Toggle is off by default
-    Callback = function(Value)
-        disableAnimations = Value -- Update the animation toggle state
-        if disableAnimations then
-            disableEggHatchAnimations()
-        else
-            print("Egg hatch animations enabled.")
-            -- Optional: Reset the transparency back if needed (not included here for clarity)
-        end
-    end
 })
 
 -- Auto Hatch Toggle (unchanged)
