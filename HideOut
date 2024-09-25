@@ -194,18 +194,23 @@ local selectedType = false -- Default: false (Normal)
 local hatchLoopRunning = false -- State for the auto hatch toggle
 local disableAnimations = false -- State for the animation toggle
 
--- Function to disable egg hatch animations
-local function disableEggHatchAnimations()
+-- Function to disable visible egg hatch animations
+local function setEggHatchAnimationsVisibility(visible)
     local player = game:GetService("Players").LocalPlayer
     local eggAnimations = player.PlayerScripts:WaitForChild("AnimationEffects"):WaitForChild("EggSpins")
 
     if eggAnimations then
         for _, animation in ipairs(eggAnimations:GetChildren()) do
             if animation:IsA("Animation") then
-                animation:Stop() -- Stop the animation
+                animation.Enabled = visible -- Set visibility based on the parameter
             end
         end
-        print("Visible egg hatch animations disabled.") -- Debug print
+
+        if visible then
+            print("Visible egg hatch animations enabled.") -- Debug print
+        else
+            print("Visible egg hatch animations disabled.") -- Debug print
+        end
     else
         print("EggSpins folder not found.") -- Debug print if not found
     end
@@ -252,12 +257,7 @@ EggsTab:AddToggle({
     Default = false, -- Toggle is off by default
     Callback = function(Value)
         disableAnimations = Value -- Update the animation toggle state
-        if disableAnimations then
-            disableEggHatchAnimations() -- Disable animations if toggle is on
-        else
-            print("Visible hatch animations are enabled.") -- Debug print
-            -- Here you could re-enable the animations if needed
-        end
+        setEggHatchAnimationsVisibility(not disableAnimations) -- Set visibility based on toggle
     end
 })
 
