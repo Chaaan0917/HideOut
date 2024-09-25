@@ -228,38 +228,6 @@ EggsTab:AddDropdown({
     end    
 })
 
--- Variable to track whether hatch animations are enabled
-local hatchAnimationsEnabled = true
-
--- Create a toggle to enable/disable hatch animation
-EggsTab:AddToggle({
-    Name = "Hatch Animation",
-    Default = true, -- Animations are enabled by default
-    Callback = function(Value)
-        hatchAnimationsEnabled = Value -- Update animation state based on toggle
-        if hatchAnimationsEnabled then
-            print("Hatch animations enabled.") -- Debug print
-        else
-            print("Hatch animations disabled.") -- Debug print
-        end
-    end
-})
-
--- Function to disable the hatch animation
-local function disableHatchAnimation()
-    if not hatchAnimationsEnabled then
-        local player = game.Players.LocalPlayer
-        -- Check if the player has the animation object responsible for egg hatching
-        local hatchAnimation = player:FindFirstChild("HatchAnimation") -- Replace with actual animation path
-        if hatchAnimation then
-            hatchAnimation:Destroy() -- Destroys the animation to prevent it from playing
-            print("Hatch animation has been disabled.")
-        else
-            print("Hatch animation not found.")
-        end
-    end
-end
-
 -- Modify the existing auto-hatch loop to respect the toggle for animations
 EggsTab:AddToggle({
     Name = "Auto Hatch",
@@ -306,14 +274,17 @@ EggsTab:AddToggle({
     Default = true, -- Set initial state
     Callback = function(Value)
         isEggAnimationEnabled = Value -- Update toggle state
+        updateEggAnimationStatus() -- Update the egg animation status
+        
+        -- Print current status
         if isEggAnimationEnabled then
             print("Egg animation is now ON.")
         else
             print("Egg animation is now OFF.")
         end
-        updateEggAnimationStatus() -- Update the egg animation status
     end    
 })
+
 
 local OtherTab = Window:MakeTab({
 	Name = "Other",
