@@ -194,25 +194,28 @@ local selectedType = false -- Default: false (Normal)
 local hatchLoopRunning = false -- State for the auto hatch toggle
 local disableAnimations = false -- State for the animation toggle
 
--- Function to disable visible egg hatch animations using the provided paths
-local function setEggHatchAnimationsVisibility(visible)
+-- Function to disable egg hatch animations
+local function disableEggHatchAnimations()
     local player = game:GetService("Players").LocalPlayer
-    local eggAnimations = player:WaitForChild("PlayerScripts"):WaitForChild("AnimationEffects"):WaitForChild("EggSpins")
+    local animationEffects = player:FindFirstChild("PlayerScripts"):FindFirstChild("AnimationEffects")
 
-    if eggAnimations then
-        for _, animation in ipairs(eggAnimations:GetChildren()) do
-            if animation:IsA("Animation") then
-                animation.Enabled = visible -- Enable or disable the animation based on the toggle
+    if animationEffects then
+        local eggSpins = animationEffects:FindFirstChild("EggSpins")
+        if eggSpins then
+            -- Set transparency to make it invisible (for parts or GUI elements)
+            for _, obj in ipairs(eggSpins:GetChildren()) do
+                if obj:IsA("BasePart") then
+                    obj.Transparency = 1 -- Make it invisible
+                elseif obj:IsA("Animation") then
+                    obj:Stop() -- Stop animations
+                end
             end
-        end
-
-        if visible then
-            print("Visible egg hatch animations enabled.") -- Debug print
+            print("Egg hatch animations disabled.")
         else
-            print("Visible egg hatch animations disabled.") -- Debug print
+            print("EggSpins not found.")
         end
     else
-        print("EggSpins not found.") -- Debug print if not found
+        print("AnimationEffects not found.")
     end
 end
 
@@ -220,9 +223,9 @@ end
 EggsTab:AddDropdown({
     Name = "Egg Selection",
     Default = "Plushie Egg", -- Default egg selected for hatching
-    Options = {"Beginner Egg", "Farm Egg", "Ocean Egg", "Beach Egg","Winter Egg","Arctic Egg","Lava Egg","Hell Egg","Slush Egg",
-    "Chocolate Egg","Enchanted Egg","Angel Egg","Blocky Egg","Plushie Egg","Cactus Egg","Coconut Egg","Glow Egg","Crystal Egg",
-    "Raider Egg","Thieves Egg","Steampunk Egg","Gearpunk Egg"}, -- Add more egg types as needed
+    Options = {"Beginner Egg", "Farm Egg", "Ocean Egg", "Beach Egg", "Winter Egg", "Arctic Egg", "Lava Egg", "Hell Egg", "Slush Egg",
+               "Chocolate Egg", "Enchanted Egg", "Angel Egg", "Blocky Egg", "Plushie Egg", "Cactus Egg", "Coconut Egg", "Glow Egg", "Crystal Egg",
+               "Raider Egg", "Thieves Egg", "Steampunk Egg", "Gearpunk Egg"}, -- Add more egg types as needed
     Callback = function(Value)
         selectedEgg = Value -- Update the selected egg
         print("Selected Egg: " .. selectedEgg) -- Debug print
@@ -257,7 +260,11 @@ EggsTab:AddToggle({
     Default = false, -- Toggle is off by default
     Callback = function(Value)
         disableAnimations = Value -- Update the animation toggle state
-        setEggHatchAnimationsVisibility(not disableAnimations) -- Set visibility based on toggle
+        if disableAnimations then
+            disableEggHatchAnimations()
+        else
+            print("Egg hatch animations enabled (no re-enable function set).")
+        end
     end
 })
 
@@ -289,4 +296,3 @@ EggsTab:AddToggle({
         end
     end
 })
-
