@@ -272,9 +272,9 @@ OtherTab:AddToggle({
     end
 })
 
-local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 -- Variable to track the state of auto-clicking
 local autoClicking = false
@@ -282,7 +282,7 @@ local autoClicking = false
 -- Function to simulate mouse clicks at random positions on the screen
 local function simulateRandomClick()
     local playerGui = player:WaitForChild("PlayerGui")
-    
+
     while autoClicking do
         -- Get screen dimensions
         local screenSize = playerGui.AbsoluteSize
@@ -291,13 +291,13 @@ local function simulateRandomClick()
         local randomX = math.random(0, screenSize.X)
         local randomY = math.random(0, screenSize.Y)
         
-        -- Simulate the mouse click at the random position
-        local args = {
-            [1] = Vector2.new(randomX, randomY) -- Click at a random position
-        }
-
+        -- Create a touch input to simulate a click
+        local touchInput = Instance.new("InputObject")
+        touchInput.UserInputType = Enum.UserInputType.Touch
+        touchInput.Position = Vector3.new(randomX, randomY, 0)
+        
         -- Fire the click event
-        game:GetService("ReplicatedStorage").Remotes.Events.Click:FireServer(unpack(args))
+        ReplicatedStorage.Remotes.Events.Click:FireServer(touchInput)
 
         wait(0.1) -- Adjust this for click speed
     end
@@ -317,4 +317,3 @@ OtherTab:AddToggle({
         end
     end
 })
-
