@@ -192,12 +192,18 @@ local selectedEgg = "Plushie Egg" -- Default egg type
 local selectedHatchCount = 1 -- Default hatch count (1, 3, or 8)
 local selectedType = false -- Default: false (Normal)
 local hatchLoopRunning = false -- State for the auto hatch toggle
+local isEggAnimationEnabled = true -- State for egg animation toggle
+
+-- Function to update egg animation status
+local function updateEggAnimationStatus()
+    game:GetService("ReplicatedStorage").Remotes.Events.EggAnimateStatus:Fire(isEggAnimationEnabled)
+end
 
 -- Create the dropdown menu for egg selection
 EggsTab:AddDropdown({
     Name = "Egg Selection",
     Default = "Plushie Egg", -- Default egg selected for hatching
-    Options = {"Beginner Egg", "Farm Egg", "Ocean Egg", "Beach Egg","Winter Egg","Actic Egg","Lava Egg","Hell Egg","Slush Egg",
+    Options = {"Beginner Egg", "Farm Egg", "Ocean Egg", "Beach Egg","Winter Egg","Arctic Egg","Lava Egg","Hell Egg","Slush Egg",
     "Chocolate Egg","Enchanted Egg","Angel Egg","Blocky Egg","Plushie Egg","Cactus Egg","Coconut Egg","Glow Egg","Crystal Egg",
     "Raider Egg","Thieves Egg","Steampunk Egg","Gearpunk Egg"}, -- Add more egg types as needed
     Callback = function(Value)
@@ -228,6 +234,22 @@ EggsTab:AddDropdown({
     end    
 })
 
+-- Create the toggle for egg animation
+EggsTab:AddToggle({
+    Name = "Toggle Egg Animation",
+    Default = true, -- Set initial state
+    Callback = function(Value)
+        isEggAnimationEnabled = Value -- Update toggle state
+        updateEggAnimationStatus() -- Update the egg animation status
+        
+        if isEggAnimationEnabled then
+            print("Egg animation is now ON.")
+        else
+            print("Egg animation is now OFF.")
+        end
+    end    
+})
+
 -- Modify the existing auto-hatch loop to respect the toggle for animations
 EggsTab:AddToggle({
     Name = "Auto Hatch",
@@ -246,13 +268,15 @@ EggsTab:AddToggle({
                     }
 
                     -- Disable hatch animation if the toggle is off
-                    disableHatchAnimation()
+                    if not isEggAnimationEnabled then
+                        updateEggAnimationStatus() -- Ensure animation is disabled
+                    end
 
                     -- Fire the PurchaseEgg event for the selected egg
                     game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Events"):WaitForChild("PurchaseEgg"):FireServer(unpack(args))
 
                     -- Add a delay to avoid overloading the server
-                    wait() -- Adjust the wait time if necessary
+                    wait(1) -- Adjust the wait time if necessary
                 end
             end)
         else
