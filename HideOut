@@ -187,44 +187,45 @@ local Section = EggsTab:AddSection({
 	Name = "Auto Hatch Eggs"
 })
 
--- Default selections for the dropdowns
-local selectedEgg = "Plushie Egg" -- Default egg type
-local selectedHatchCount = 1 -- Default hatch count (1, 3, or 8)
-local selectedType = false -- Default: false (Normal)
-local hatchLoopRunning = false -- State for the auto hatch toggle
-local disableAnimations = false -- State for disabling visible hatch animations
-
--- Function to disable egg hatch animations
+-- Function to disable egg hatch animations across multiple locations
 local function disableEggHatchAnimations()
     local player = game:GetService("Players").LocalPlayer
-    local animationEffects = player:FindFirstChild("PlayerScripts"):FindFirstChild("AnimationEffects")
 
-    if animationEffects then
-        local eggSpins = animationEffects:FindFirstChild("EggSpins")
-        if eggSpins then
-            -- Attempt to stop any running animations and make parts invisible
-            for _, obj in ipairs(eggSpins:GetDescendants()) do
-                if obj:IsA("BasePart") then
-                    obj.Transparency = 1 -- Make it invisible
-                    print("Set transparency for part: " .. obj.Name)
-                elseif obj:IsA("AnimationTrack") then
-                    obj:Stop() -- Stop animations if any
-                    print("Stopped animation: " .. obj.Name)
-                elseif obj:IsA("ParticleEmitter") then
-                    obj.Enabled = false -- Disable particle effects if any
-                    print("Disabled particle emitter: " .. obj.Name)
+    -- List of possible animation sources
+    local animationPaths = {
+        game:GetService("StarterPlayer").StarterPlayerScripts:FindFirstChild("AnimationEffects"),
+        player:FindFirstChild("PlayerScripts"):FindFirstChild("AnimationEffects"),
+        game:GetService("Players").LocalPlayer.PlayerScripts:FindFirstChild("AnimationEffects")
+    }
+
+    -- Iterate through all potential sources and attempt to disable visibility
+    for _, animationEffects in ipairs(animationPaths) do
+        if animationEffects then
+            local eggSpins = animationEffects:FindFirstChild("EggSpins")
+            if eggSpins then
+                for _, obj in ipairs(eggSpins:GetDescendants()) do
+                    if obj:IsA("BasePart") then
+                        obj.Transparency = 1 -- Make it invisible
+                        print("Set transparency for part: " .. obj.Name)
+                    elseif obj:IsA("AnimationTrack") then
+                        obj:Stop() -- Stop animations if any
+                        print("Stopped animation: " .. obj.Name)
+                    elseif obj:IsA("ParticleEmitter") then
+                        obj.Enabled = false -- Disable particle effects if any
+                        print("Disabled particle emitter: " .. obj.Name)
+                    end
                 end
+                print("Egg hatch animations disabled in path: " .. animationEffects:GetFullName())
+            else
+                print("EggSpins not found in: " .. animationEffects:GetFullName())
             end
-            print("Egg hatch animations disabled.")
         else
-            print("EggSpins not found.")
+            print("AnimationEffects not found at this path.")
         end
-    else
-        print("AnimationEffects not found.")
     end
 end
 
--- Create the dropdown menu for egg selection
+-- Create the dropdown menu for egg selection (unchanged)
 EggsTab:AddDropdown({
     Name = "Egg Selection",
     Default = "Plushie Egg", -- Default egg selected for hatching
@@ -237,7 +238,7 @@ EggsTab:AddDropdown({
     end    
 })
 
--- Create the dropdown menu for hatch count selection
+-- Create the dropdown menu for hatch count selection (unchanged)
 EggsTab:AddDropdown({
     Name = "Hatch Count Selection",
     Default = "1", -- Default hatch count
@@ -248,7 +249,7 @@ EggsTab:AddDropdown({
     end    
 })
 
--- Create the dropdown menu for egg type selection (Normal/Golden)
+-- Create the dropdown menu for egg type selection (Normal/Golden) (unchanged)
 EggsTab:AddDropdown({
     Name = "Egg Type Selection",
     Default = "Normal", -- Default egg type
@@ -273,7 +274,7 @@ EggsTab:AddToggle({
     end
 })
 
--- Auto Hatch Toggle
+-- Auto Hatch Toggle (unchanged)
 EggsTab:AddToggle({
     Name = "Auto Hatch",
     Default = false, -- Toggle is off by default
