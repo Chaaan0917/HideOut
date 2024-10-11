@@ -237,3 +237,135 @@ OtherTab:AddToggle({
         end
     end
 })
+
+local collectTab = Window:MakeTab({
+	Name = "Tab 1",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+local Section = collectTab:AddSection({
+	Name = "Section"
+})
+
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+
+local pickups = game.Workspace:WaitForChild("Pickups")
+
+-- Variable to store the toggle state
+local teleportEnabled = false
+
+-- Function to teleport a part to the player
+local function teleportPartToPlayer(part)
+    if part:IsA("BasePart") and teleportEnabled then  -- Check if teleporting is enabled
+        part.CFrame = character.HumanoidRootPart.CFrame  -- Teleport the part to player
+    end
+end
+
+-- Function to teleport all existing parts
+local function teleportExistingParts()
+    for _, part in pairs(pickups:GetChildren()) do
+        teleportPartToPlayer(part)
+    end
+end
+
+-- Teleport existing parts in Pickups when the script starts
+teleportExistingParts()
+
+-- Connect to the ChildAdded event to teleport new parts
+pickups.ChildAdded:Connect(function(newPart)
+    wait(0.1) -- Optional delay to ensure the part is fully added before teleporting
+    teleportPartToPlayer(newPart)
+end)
+
+-- Create the toggle
+collectTab:AddToggle({
+    Name = "Auto Collect Materials",
+    Default = false,
+    Callback = function(Value)
+        teleportEnabled = Value  -- Update teleportEnabled based on the toggle
+        print("Teleport enabled:", teleportEnabled)  -- Optional: print the toggle state
+    end    
+})
+
+local chestName = "NormalChest" -- The chest model name
+local isEnabled = false -- State of the toggle
+local teleportThread -- Variable to hold the thread for toggling
+
+-- Function to teleport to the chest and interact with the ProximityPrompt
+local function teleportAndInteract()
+    local teleportToPart = nil
+    local proximityPrompt = nil
+
+    -- Search through the XMarksTheSpot folder
+    local xMarksTheSpot = game.Workspace:FindFirstChild("XMarksTheSpot")
+    if xMarksTheSpot then
+        -- Loop through the NormalChests inside XMarksTheSpot
+        for _, chest in ipairs(xMarksTheSpot:GetChildren()) do
+            if chest:IsA("Model") and chest.Name == chestName then
+                -- Get the MainPart inside the chest
+                local mainPart = chest:FindFirstChild("MainPart")
+                if mainPart then
+                    -- Find the Attachment and ProximityPrompt inside MainPart
+                    local attachment = mainPart:FindFirstChild("Attachment")
+                    if attachment then
+                        proximityPrompt = attachment:FindFirstChildOfClass("ProximityPrompt")
+                    end
+
+                    -- Set the part to teleport to
+                    teleportToPart = mainPart
+                    break
+                end
+            end
+        end
+    end
+
+    -- Teleport the player to the MainPart
+    if teleportToPart then
+        local character = game.Players.LocalPlayer.Character
+        if character and character:FindFirstChild("HumanoidRootPart") then
+            character.HumanoidRootPart.CFrame = teleportToPart.CFrame
+            print("Teleported to part:", teleportToPart.Name)
+            
+            -- Trigger the ProximityPrompt if it exists
+            if proximityPrompt then
+                fireproximityprompt(proximityPrompt)
+                print("Interacted with ProximityPrompt!")
+            else
+                warn("ProximityPrompt not found!")
+            end
+        end
+    else
+        warn("Could not find the MainPart or ProximityPrompt!")
+    end
+end
+
+-- Function to handle the toggle
+local function toggleTeleporting(Value)
+    isEnabled = Value
+    if isEnabled then
+        print("Teleporting enabled.")
+        -- Start the teleporting loop
+        teleportThread = spawn(function()
+            while isEnabled do
+                teleportAndInteract()
+                wait(1.5) -- Wait for 6 seconds before the next iteration
+            end
+        end)
+    else
+        print("Teleporting disabled.")
+        -- Stop the teleporting loop by setting isEnabled to false
+        if teleportThread then
+            teleportThread:Disconnect() -- Ensure to disconnect the thread properly
+        end
+    end
+end
+
+-- Add the toggle to your GUI
+collectTab:AddToggle({
+    Name = "Farm Eggs",
+    Default = false,
+    Callback = toggleTeleporting
+})
+
