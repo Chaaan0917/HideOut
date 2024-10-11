@@ -239,7 +239,7 @@ OtherTab:AddToggle({
 })
 
 local collectTab = Window:MakeTab({
-	Name = "Tab 1",
+	Name = "Collect??",
 	Icon = "rbxassetid://4483345998",
 	PremiumOnly = false
 })
